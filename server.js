@@ -1,17 +1,17 @@
 import connectDB from './db/connection.js'
 import express from 'express'
-import bookRoutes from './routes/bookRoutes.js'
+import productRoutes from './routes/productRoutes.js'
 
 const app = express()
 
-const port = 3000;
+export const port = process.env.PORT || 3000;
 
 connectDB();
 
 app.use(express.json());
 
-app.use('/api/books', bookRoutes);
+app.use('/api/products', productRoutes);
 
 app.listen(port, () => {
-    console.log(`connected to port ${port}`)
+    console.log(`Server is running at http://localhost:${port}`)
 })
