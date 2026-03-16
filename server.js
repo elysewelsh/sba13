@@ -1,4 +1,4 @@
-import connectDB from './db/connection.js'
+import connectDB from './config/connection.js'
 import express from 'express'
 import productRoutes from './routes/productRoutes.js'
 
