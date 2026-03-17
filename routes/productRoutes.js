@@ -63,9 +63,20 @@ router.delete('/:id', async (req, res) => {
 
 router.get('/', async (req, res) => {
     const categoryQ = req.query.category || "all";
+    let filterPrice;
     const minPrice = req.query.minPrice || "0";
-    const maxDBPrice = await Product.find({price: {$max}});
-    const maxPrice = req.query.maxPrice || maxDBPrice;
+    if (req.query.maxPrice) {
+        filterPrice = {
+            $gte: minPrice,
+            $lte: req.query.maxPrice
+        }
+    } else {
+        filterPrice = {
+            $gte: minPrice,         
+        }
+    }
+    // const maxDBPrice = await Product.find({price: {$max}});
+    // const maxPrice = req.query.maxPrice || maxDBPrice;
     const sortBy = req.query.sortBy || "name_asc";
     const page = req.query.page || 1;
     const limit = req.query.limit || 10;
@@ -80,21 +91,17 @@ router.get('/', async (req, res) => {
     if (sortDirection === "desc") {
         sortNum = -1
     }
-
     try {
         if (categoryQ === "all") {
             const products = await Product
             .find({ 
-                price: { 
-                    $gte: minPrice
-                    , $lte: maxPrice
-                }
+                price: filterPrice
             }
             , { _id: 0, 
                 __v: 0
             }
             )
-            .sort(sortField,sortNum)
+            .sort({sortField: sortNum})
             .skip(skip)
             .limit(limit);
             console.log(products);
@@ -104,10 +111,7 @@ router.get('/', async (req, res) => {
             .find(
                 { 
                     category: { $eq: categoryQ },
-                    price: { 
-                        $gte: minPrice
-                        , $lte: maxPrice
-                    }
+                    price: filterPrice
                 }
                 , 
                 { 
@@ -115,7 +119,7 @@ router.get('/', async (req, res) => {
                     , __v: 0
                 }
             )
-            .sort(sortField,sortNum)
+            .sort({sortField: sortNum})
             .skip(skip)
             .limit(limit);
             console.log(products);
