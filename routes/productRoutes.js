@@ -21,7 +21,7 @@ router.get('/:id', async (req, res) => {
         .find({ 
             _id: { $eq: id }
         })
-        if (!productFind) {
+        if (productFind.length === 0) {
             return res.status(404).json({message: `not able to find ProductID: ${id}`})
         }
         console.log(productFind);
@@ -75,8 +75,6 @@ router.get('/', async (req, res) => {
             $gte: minPrice,         
         }
     }
-    // const maxDBPrice = await Product.find({price: {$max}});
-    // const maxPrice = req.query.maxPrice || maxDBPrice;
     const sortBy = req.query.sortBy || "name_asc";
     const page = req.query.page || 1;
     const limit = req.query.limit || 10;
