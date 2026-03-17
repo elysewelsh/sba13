@@ -87,10 +87,13 @@ router.get('/', async (req, res) => {
         sortField = "name"
     }
     const sortDirection = sortArray[1];
-    let sortNum = 1;
+    let sortNum;
     if (sortDirection === "desc") {
         sortNum = -1
-    }
+    } else {
+        sortNum = 1
+    };
+    
     try {
         if (categoryQ === "all") {
             const products = await Product
@@ -101,9 +104,10 @@ router.get('/', async (req, res) => {
                 __v: 0
             }
             )
-            .sort({sortField: sortNum})
+            .sort({[sortField]: sortNum})
             .skip(skip)
             .limit(limit);
+            console.log(sortField, sortNum);
             console.log(products);
             res.status(200).json(products);
         } else {
@@ -119,9 +123,10 @@ router.get('/', async (req, res) => {
                     , __v: 0
                 }
             )
-            .sort({sortField: sortNum})
+            .sort({[sortField]: sortNum})
             .skip(skip)
             .limit(limit);
+            console.log(sortField, sortNum);
             console.log(products);
             res.status(200).json(products);
         }
